@@ -17,12 +17,23 @@
 #define LSA_T(kc) MT(MOD_LSFT | MOD_LALT, kc)
 #define BP_NDSH_MAC ALGR(KC_8)
 
+#define SHRUG_DASH SS_TAP(X_KP_0) SS_TAP(X_KP_0) SS_TAP(X_A) SS_TAP(X_F)
+#define SHRUG_FACE SS_TAP(X_KP_3) SS_TAP(X_KP_0) SS_TAP(X_C) SS_TAP(X_KP_4)
+#define TYPE_SHRUG_DASH SS_LALT(SHRUG_DASH)
+#define TYPE_SHRUG_FACE SS_LALT(SHRUG_FACE)
+#define UNICODE_STARTER SS_LCTL(SS_LSFT(SS_TAP(X_U)))
+#define TYPE_SHRUG_DASH_LINUX UNICODE_STARTER SHRUG_DASH SS_TAP(X_ENTER)
+#define TYPE_SHRUG_FACE_LINUX UNICODE_STARTER SHRUG_FACE SS_TAP(X_ENTER)
+
+
 enum custom_keycodes {
   RGB_SLD = EZ_SAFE_RANGE,
   HSV_172_255_255,
   HSV_86_255_128,
   ST_MACRO_0,
   ST_MACRO_1,
+  ST_MACRO_2,
+  ST_MACRO_3,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -31,8 +42,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_LBRACKET,    KC_SCOLON,      KC_COMMA,       KC_DOT,         KC_P,           KC_Y,           KC_LPRN,                                        KC_RPRN,        KC_F,           KC_G,           KC_C,           KC_R,           KC_L,           KC_RBRACKET,
     LGUI_T(KC_ESCAPE),KC_A,           KC_O,           KC_E,           KC_U,           KC_I,                                                                           KC_D,           KC_H,           KC_T,           KC_N,           KC_S,           KC_MINUS,
     KC_TAB,         KC_QUOTE,       KC_Q,           KC_J,           KC_K,           KC_X,           KC_LCBR,                                        KC_RCBR,        KC_B,           KC_M,           KC_W,           KC_V,           KC_Z,           KC_BSLASH,
-    KC_TRANSPARENT, KC_TRANSPARENT, KC_LALT,        KC_LCTRL,       KC_LSHIFT,                                                                                                      KC_RSHIFT,      KC_LEFT,        KC_DOWN,        KC_UP,          KC_RIGHT,
-                                                                                                    KC_DELETE,      ST_MACRO_0,     KC_LALT,        TG(3),
+    ST_MACRO_2, ST_MACRO_3, KC_LALT,        KC_LCTRL,       KC_LSHIFT,                                                                                                      KC_RSHIFT,      KC_LEFT,        KC_DOWN,        KC_UP,          KC_RIGHT,
+                                                                                                    KC_GRAVE,      ST_MACRO_0,     KC_LALT,        TG(3),
                                                                                                                     LCTL(LSFT(KC_PSCREEN)),LGUI(LSFT(KC_Q)),
                                                                                     KC_BSPACE,      KC_ENTER,       TO(1),          LSFT(KC_LGUI),  MO(2),          KC_SPACE
   ),
@@ -86,6 +97,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (record->event.pressed) {
       SEND_STRING(SS_LSFT(SS_TAP(X_SCOLON)) SS_DELAY(100) SS_TAP(X_W) SS_DELAY(100) SS_TAP(X_Q) SS_DELAY(100) SS_TAP(X_A));
 
+    }
+    break;
+    case ST_MACRO_2:
+    if (record->event.pressed) {
+      SEND_STRING(TYPE_SHRUG_DASH SS_TAP(X_BSLASH) SS_LSFT(SS_TAP(X_MINUS)) SS_LSFT(SS_TAP(X_9)) TYPE_SHRUG_FACE SS_LSFT(SS_TAP(X_0)) SS_LSFT(SS_TAP(X_MINUS)) SS_TAP(X_SLASH) TYPE_SHRUG_DASH);
+    }
+    break;
+    case ST_MACRO_3:
+    if (record->event.pressed) {
+      SEND_STRING(TYPE_SHRUG_DASH_LINUX SS_TAP(X_BSLASH) SS_LSFT(SS_TAP(X_MINUS)) SS_LSFT(SS_TAP(X_9)) TYPE_SHRUG_FACE_LINUX SS_LSFT(SS_TAP(X_0)) SS_LSFT(SS_TAP(X_MINUS)) SS_TAP(X_SLASH) TYPE_SHRUG_DASH_LINUX);
     }
     break;
     case RGB_SLD:
@@ -201,11 +222,11 @@ uint32_t layer_state_set_user(uint32_t state) {
         }
         break;
     }
+    rgblight_mode_noeeprom(RGBLIGHT_MODE_BREATHING + 3);
     return state;
 
 };
 
 void keyboard_post_init_user(void) {
   layer_state_set_user(layer_state);
-  rgblight_mode_noeeprom(RGBLIGHT_MODE_BREATHING + 3);
 }

@@ -5,4 +5,4 @@
 #define ORYX_CONFIGURATOR
 #undef TAPPING_TERM
 #define TAPPING_TERM 156
-
+#define FORCE_NKRO
